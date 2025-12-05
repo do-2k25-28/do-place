@@ -11,11 +11,11 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_USER=doplace
-      - REDIS_PASSWORD=4D3v
+      - REDIS_PASSWORD=superSecretPassword
       - REDIS_DB=
       - FRONTEND_ORIGIN=http://localhost:8001
-      - JWT_SECRET=mySuperSecret
-      - HASH_SECRET=anotherSuperSecret
+      - JWT_SECRET=NpKn6gLUMTfHt4hmHveDKRxibPK7fcP7
+      - HASH_SECRET=TZtwd9j3AsQtai44jSyNDzbmfC8XETkz
     command: ["deno", "run", "dev"]
     volumes:
       - ./backend:/app
@@ -26,6 +26,8 @@ services:
       - backend
     network_mode: host
     working_dir: /app
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8000/api/v1
     command: ["bun", "run", "dev"]
     volumes:
       - ./frontend:/app
