@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "tasks": {
+    "dev": "deno run --allow-env --allow-read --allow-write --allow-ffi --allow-net --watch src/index.ts"
+  },
+  "imports": {
+    "@cross/jwt": "jsr:@cross/jwt@^0.6.0",
+    "@felix/argon2": "jsr:@felix/argon2@^3.0.2",
+    "@oak/commons": "jsr:@oak/commons@^1.0.1",
+    "@oak/oak": "jsr:@oak/oak@^17",
+    "@zod/zod": "jsr:@zod/zod@^4.1.12",
+    "redis": "npm:redis@^5.9.0"
+  }
+}

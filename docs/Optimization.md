@@ -1,0 +1,3 @@
+# Optimizations
+
+To optimize the server while keeping the replicable functionality, the server should not fetch the entire canvas everytime a user requests it. As the canvas is 500k bytes, every request is half a MB and it's way too much when there are a lot of clients. The server should fetch the canvas periodically (every minute or so), subscribe to events on the database and update its local copy accordingly. With this technique, the server always has an up to date canvas in memory without fetching it all the time at no extra cost because the backend is already subscribed to events for the canvas as it relays the info to the clients through the websocket.
