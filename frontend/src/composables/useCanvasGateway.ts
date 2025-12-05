@@ -8,10 +8,14 @@ const logger = new Logger('Gateway', '#00b7ff');
 function canvasGateway() {
   const { getCanvasGateway } = useApi();
   const { setPixel } = useCanvas();
+  const store = useAccountStore();
 
   let ws: WebSocket;
 
   const init = () => {
+    // If we were connected, we get out of the timeout loop
+    if (!store.connected) return;
+
     ws = getCanvasGateway();
 
     ws.onopen = (event: Event) => {
@@ -19,7 +23,7 @@ function canvasGateway() {
     };
 
     ws.onclose = (event) => {
-      if (event.code === 1000) return;
+      if ([1000].includes(event.code)) return;
 
       logger.error(
         'Abnormal connection closure',

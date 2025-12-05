@@ -42,7 +42,7 @@ async function login(ctx: Context) {
   setAuthCookie(ctx, jwt);
 
   ctx.response.status = Status.OK;
-  ctx.response.body = { success: true };
+  ctx.response.body = { success: true, userId };
 }
 
 export default function (router: Router) {

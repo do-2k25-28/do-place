@@ -1,6 +1,10 @@
 import { useAccountStore, useCanvasStore } from '@/composables/store';
 import { BACKEND_URL, request } from '@/utils';
 
+export type Login = {
+  userId: string;
+};
+
 export type AccountState =
   | {
       connected: false;
@@ -17,31 +21,30 @@ export type CanvasProperties = {
 
 export function useApi() {
   const canvasStore = useCanvasStore();
+  const authStore = useAccountStore();
 
   const login = async (email: string, password: string): Promise<void> => {
-    await request({
+    const response = await request<Login>({
       endpoint: '/accounts/login',
       method: 'POST',
       body: { email, password },
       credentials: true,
     });
+
+    if (response.success) {
+      authStore.connected = true;
+      authStore.id = response.userId;
+    }
   };
 
-  const accountState = async (): Promise<void> => {
-    const store = useAccountStore();
-
-    const response = await request<AccountState, false>({
-      endpoint: '/accounts/state',
-      method: 'GET',
+  const logout = async (): Promise<void> => {
+    await request({
+      endpoint: '/accounts/logout',
+      method: 'POST',
       credentials: true,
     });
 
-    store.connected = response.connected;
-
-    // It's a bit faster not to use the store for the check
-    if (response.connected) {
-      store.id = response.userId;
-    }
+    authStore.connected = false;
   };
 
   const register = async (email: string, username: string, password: string): Promise<void> => {
@@ -53,14 +56,27 @@ export function useApi() {
     });
   };
 
+  const accountState = async (): Promise<void> => {
+    const response = await request<AccountState, false>({
+      endpoint: '/accounts/state',
+      method: 'GET',
+      credentials: true,
+    });
+
+    authStore.connected = response.connected;
+
+    // It's a bit faster not to use the store for the check
+    if (response.connected) {
+      authStore.id = response.userId;
+    }
+  };
+
   const getCanvas = async () => {
-    const a = await request({
+    return await request({
       endpoint: '/canvas',
       method: 'GET',
       binary: true,
     });
-
-    return a;
   };
 
   const getCanvasProperties = async () => {
@@ -82,5 +98,13 @@ export function useApi() {
     return new WebSocket(BACKEND_URL + '/canvas/gateway');
   };
 
-  return { login, accountState, register, getCanvas, getCanvasProperties, getCanvasGateway };
+  return {
+    login,
+    logout,
+    accountState,
+    register,
+    getCanvas,
+    getCanvasProperties,
+    getCanvasGateway,
+  };
 }
