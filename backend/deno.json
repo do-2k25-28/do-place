@@ -1,5 +1,4 @@
 {
-  "version": "1.0.0",
   "tasks": {
     "dev": "deno run --allow-env --allow-read --allow-write --allow-ffi --allow-net --watch src/index.ts"
   },
