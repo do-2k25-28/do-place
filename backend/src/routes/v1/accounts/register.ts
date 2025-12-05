@@ -10,6 +10,7 @@ import { httpError } from '../../../utils/httpError.ts';
 import { createJWT } from '../../../utils/jwt.ts';
 
 const schema = z.object({
+  email: z.email(),
   username: z.string().regex(/^[A-Za-z0-9]{3,16}$/g),
   password: z.string().min(4).max(128),
 });
@@ -19,7 +20,7 @@ type Body = z.infer<typeof schema>;
 async function register(ctx: Context) {
   const body = ctx.state.parsedBody as Body;
 
-  const existingUser = await accounts.getUserIdByUsername(body.username);
+  const existingUser = await accounts.getUserIdByEmail(body.username);
 
   if (existingUser !== null) {
     ctx.response.status = Status.BadRequest;
@@ -28,7 +29,7 @@ async function register(ctx: Context) {
   }
 
   const hash = await hashPassword(body.password);
-  const id = await accounts.createBasicUser(body.username, hash);
+  const id = await accounts.createBasicUser(body.email, body.username, hash);
   const jwt = await createJWT(id);
 
   setAuthCookie(ctx, jwt);

@@ -36,9 +36,7 @@ watch(
   () => {
     drawCanvas();
   },
-  {
-    deep: true,
-  },
+  { deep: true },
 );
 
 onMounted(async () => {

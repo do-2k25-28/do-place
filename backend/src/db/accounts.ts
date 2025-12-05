@@ -7,6 +7,7 @@ export type RedisUser = {
 };
 
 export async function createBasicUser(
+  email: string,
   username: string,
   password: string
 ): Promise<string> {
@@ -16,11 +17,12 @@ export async function createBasicUser(
 
   client.json.set(`account:${id}`, '$', {
     type: 'basic',
+    email,
     username,
     password,
   });
 
-  client.set(`account:by-username:${username}`, id);
+  client.set(`account:by-email:${email}`, id);
 
   return id;
 }
@@ -30,11 +32,9 @@ export async function getUserById(id: string): Promise<RedisUser | null> {
   return (await client.json.get(`account:${id}`)) as RedisUser | null;
 }
 
-export async function getUserIdByUsername(
-  username: string
-): Promise<string | null> {
+export async function getUserIdByEmail(email: string): Promise<string | null> {
   const client = await getClient();
-  return await client.get(`account:by-username:${username}`);
+  return await client.get(`account:by-email:${email}`);
 }
 
 export async function getUserPassword(id: string): Promise<string | null> {

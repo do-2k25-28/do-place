@@ -18,11 +18,11 @@ export type CanvasProperties = {
 export function useApi() {
   const canvasStore = useCanvasStore();
 
-  const login = async (username: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string): Promise<void> => {
     await request({
       endpoint: '/accounts/login',
       method: 'POST',
-      body: { username, password },
+      body: { email, password },
       credentials: true,
     });
   };
@@ -44,11 +44,11 @@ export function useApi() {
     }
   };
 
-  const register = async (username: string, password: string): Promise<void> => {
+  const register = async (email: string, username: string, password: string): Promise<void> => {
     await request({
       endpoint: '/accounts/register',
       method: 'POST',
-      body: { username, password },
+      body: { email, username, password },
       credentials: true,
     });
   };

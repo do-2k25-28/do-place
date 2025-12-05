@@ -29,10 +29,11 @@ export function useCanvas() {
     if (!_canvas?.value) throw new Error('Must provide HTMLCanvasElement on Canvas initialization');
     canvas = _canvas.value;
 
-    logger.debug('Initializing canvas', { width: store.width, height: store.height });
+    logger.debug(`Initializing canvas (${store.width}x${store.height})`);
 
     backCanvas.width = store.width;
     backCanvas.height = store.height;
+
     const backContext = backCanvas.getContext('2d')!;
 
     const canvasData = new Uint8Array(await api.getCanvas());

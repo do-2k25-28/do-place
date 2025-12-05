@@ -9,7 +9,7 @@ import { httpError } from '../../../utils/httpError.ts';
 import { createJWT } from '../../../utils/jwt.ts';
 
 const schema = z.object({
-  username: z.string().regex(/^[A-Za-z0-9]{3,16}$/g),
+  email: z.email(),
   password: z.string().min(4).max(128),
 });
 
@@ -18,7 +18,7 @@ type Body = z.infer<typeof schema>;
 async function login(ctx: Context) {
   const body = ctx.state.parsedBody as Body;
 
-  const userId = await accounts.getUserIdByUsername(body.username);
+  const userId = await accounts.getUserIdByEmail(body.email);
   if (userId === null) {
     resetAuthCookie(ctx);
     ctx.response.status = Status.NotFound;

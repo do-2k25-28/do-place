@@ -4,7 +4,9 @@ import { useApi } from './composables';
 
 const api = useApi();
 
-console.log(api);
+if (import.meta.env.DEV) {
+  Object.defineProperty(globalThis, 'api', { value: api, writable: false });
+}
 
 api.accountState();
 </script>
