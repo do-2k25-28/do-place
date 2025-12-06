@@ -5,9 +5,12 @@
     "": {
       "name": "frontend",
       "dependencies": {
+        "@formkit/vue": "^1.6.9",
+        "@formkit/zod": "^1.6.9",
         "pinia": "^3.0.4",
         "pinia-plugin-persistedstate": "^4.7.1",
         "vue": "^3.5.22",
+        "zod": "^4.1.13",
       },
       "devDependencies": {
         "@tsconfig/node22": "^22.0.2",
@@ -135,6 +138,28 @@
     "@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.25.12", "", { "os": "win32", "cpu": "ia32" }, "sha512-HkqnmmBoCbCwxUKKNPBixiWDGCpQGVsrQfJoVGYLPT41XWF8lHuE5N6WhVia2n4o5QK5M4tYr21827fNhi4byQ=="],
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.12", "", { "os": "win32", "cpu": "x64" }, "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA=="],
+
+    "@formkit/core": ["@formkit/core@1.6.9", "", { "dependencies": { "@formkit/utils": "1.6.9" } }, "sha512-Zb5OkYKMf7Rp1pd4iUMv0TJQvfgl1PdKtRRQoGiTA0XIFLB/7tcRMr1wc5isA2JS+hllfxMTh3RWF8N+64fTMg=="],
+
+    "@formkit/dev": ["@formkit/dev@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9", "@formkit/utils": "1.6.9" } }, "sha512-4ueBpZAOiKr8/LZnq3mNePCX4ZB1j1JuJscBEwugWMnDeDwCNo5XWBrng1ER/LlitTRQ3mtEBNy2Qpm0yAHlwA=="],
+
+    "@formkit/i18n": ["@formkit/i18n@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9", "@formkit/utils": "1.6.9", "@formkit/validation": "1.6.9" } }, "sha512-8NA5bALlspCBEwInuZVgBqgQr0lDfproZdmbs2LciQpGi2B15u74JCjAkEwaKlMs+qgf/ds3QcIgUv2ztyyVEA=="],
+
+    "@formkit/inputs": ["@formkit/inputs@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9", "@formkit/utils": "1.6.9" } }, "sha512-k9gjV1e5F87NxSnu13JtKb30XYt6ndx2KGHZG8Xz0etoP75yJlMaeROHHPvlxdy2gZM6qH7Ex4it51W74Wh2Eg=="],
+
+    "@formkit/observer": ["@formkit/observer@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9", "@formkit/utils": "1.6.9" } }, "sha512-p3MCmzp6jwzXIuV3gI9uTJTJl+sN5689C7qf7gdrS8jb1fbX1snKiTyWA8FXOrBXu+ne5z/sA/yBWqYFTSLy8A=="],
+
+    "@formkit/rules": ["@formkit/rules@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9", "@formkit/utils": "1.6.9", "@formkit/validation": "1.6.9" } }, "sha512-5Vu3JACKyws1kw02qF+024WkS7L9kYZ0lmdSpsaTqg5Wf7+InsxWXFYaG6vCzqIh4Lk9NeffIzq/xyGpGxf5uQ=="],
+
+    "@formkit/themes": ["@formkit/themes@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9" }, "peerDependencies": { "tailwindcss": "^3.2.0", "unocss": "0.x.x", "windicss": "^3.0.0" }, "optionalPeers": ["tailwindcss", "unocss", "windicss"] }, "sha512-/UD+MehQEdcCEadt73eIBGGAMEK8ODN0yq9r9299WvQxIELCOP2MbcxuWCV/g2Vd15Xhl8YFdn4KCzQi4X7QXA=="],
+
+    "@formkit/utils": ["@formkit/utils@1.6.9", "", {}, "sha512-vSFhB/Sm/A+SdwKdBi4WhJcdbePqSYRaB878Ol9HL8roTmmmgQpThvkv6EjLM6aRRP27Il5rS8XtIAIeh8vdTA=="],
+
+    "@formkit/validation": ["@formkit/validation@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9", "@formkit/observer": "1.6.9", "@formkit/utils": "1.6.9" } }, "sha512-9PGwN0ZDJt3hsrMyaL8KTG3diSQDik1OGogVG6/nFcZhWUycpeamFfXZSQ5pfzmwnvrTHsvyT0FtKitUnWWuPA=="],
+
+    "@formkit/vue": ["@formkit/vue@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9", "@formkit/dev": "1.6.9", "@formkit/i18n": "1.6.9", "@formkit/inputs": "1.6.9", "@formkit/observer": "1.6.9", "@formkit/rules": "1.6.9", "@formkit/themes": "1.6.9", "@formkit/utils": "1.6.9", "@formkit/validation": "1.6.9" }, "peerDependencies": { "vue": "^3.4.0" } }, "sha512-WrjAtEsKnFJzxQuATWsWKMpTAyJE15PUmRh9hwEAqgTDy2yMog1gxqxfZv3rEAdIdgXNp08tWmRVnQgDIF3vAQ=="],
+
+    "@formkit/zod": ["@formkit/zod@1.6.9", "", { "dependencies": { "@formkit/core": "1.6.9" }, "peerDependencies": { "zod": "^3.0.0" } }, "sha512-oQp2n2UoJTZTVsbbiDLRzpdOcGPrFTpmoaqp3tzbL4m7XJ9CE+Z9Q1sFA3MXTb1xrdCh3xWY2KAyXB0x4j5svw=="],
 
     "@jridgewell/gen-mapping": ["@jridgewell/gen-mapping@0.3.13", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA=="],
 
@@ -425,6 +450,8 @@
     "wsl-utils": ["wsl-utils@0.1.0", "", { "dependencies": { "is-wsl": "^3.1.0" } }, "sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw=="],
 
     "yallist": ["yallist@3.1.1", "", {}, "sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g=="],
+
+    "zod": ["zod@4.1.13", "", {}, "sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig=="],
 
     "@vue/devtools-api/@vue/devtools-kit": ["@vue/devtools-kit@7.7.9", "", { "dependencies": { "@vue/devtools-shared": "^7.7.9", "birpc": "^2.3.0", "hookable": "^5.5.3", "mitt": "^3.0.1", "perfect-debounce": "^1.0.0", "speakingurl": "^14.0.1", "superjson": "^2.2.2" } }, "sha512-PyQ6odHSgiDVd4hnTP+aDk2X4gl2HmLDfiyEnn3/oV+ckFDuswRs4IbBT7vacMuGdwY/XemxBoh302ctbsptuA=="],
 

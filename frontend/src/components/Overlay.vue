@@ -1,12 +1,25 @@
 <script setup lang="ts">
+import { useAccountStore } from '@/composables';
+import { useTemplateRef } from 'vue';
+import AccessModal from './account/AccessModal.vue';
 import AccountModalButton from './account/AccountModalButton.vue';
 import ColorSelector from './ColorSelector.vue';
 import Timeout from './Timeout.vue';
+
+const authStore = useAccountStore();
+
+const accessModal = useTemplateRef('access-modal');
+
+function openAccountModal() {
+  if (authStore.connected) {
+  } else accessModal.value?.show();
+}
 </script>
 
 <template>
+  <AccessModal ref="access-modal" />
   <div id="login" class="card position-tl">
-    <AccountModalButton />
+    <AccountModalButton @click="openAccountModal" />
   </div>
   <div id="login" class="card position-bc">
     <Timeout />

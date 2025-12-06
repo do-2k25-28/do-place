@@ -2,11 +2,15 @@
 import { useAccountStore } from '@/composables';
 
 const store = useAccountStore();
+
+const emit = defineEmits<{
+  click: [];
+}>();
 </script>
 
 <template>
   <div class="surface">
-    <button>
+    <button @click="emit('click')">
       <span class="material-symbols-outlined">
         {{ store.connected ? 'account_circle' : 'login' }}
       </span>
