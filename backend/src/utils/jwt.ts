@@ -1,12 +1,13 @@
 import { JWTPayload, signJWT, validateJWT } from '@cross/jwt';
 
-import { fromEnvWithDefault } from './fromEnvWithDefault.ts';
+import { fromEnv } from './fromEnv.ts';
 
-const secret = fromEnvWithDefault(
-  'JWT_SECRET',
-  'jwt',
-  'JWT secret not provided. Using default value. Please populate the JWT_SECRET environment variable for production deployments.'
-);
+const secret = fromEnv('JWT_SECRET', {
+  defaultValue: 'a-string-secret-at-least-256-bits-long',
+  warningMessage:
+    'JWT secret not provided. Using default value. Please populate the JWT_SECRET environment variable for production deployments.',
+  fileExtension: true,
+});
 
 export const expiresInS = '2d';
 export const expiresIn = 60 * 60 * 24 * 2;

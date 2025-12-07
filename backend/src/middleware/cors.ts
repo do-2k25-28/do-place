@@ -1,6 +1,7 @@
 import { Status } from '@oak/commons/status';
 import { Middleware } from '@oak/oak';
-import { fromEnvWithDefault } from '../utils/fromEnvWithDefault.ts';
+
+import { fromEnv } from '../utils/fromEnv.ts';
 
 interface CorsOptions {
   origin?: string;
@@ -9,11 +10,11 @@ interface CorsOptions {
   allowMethods?: string[];
 }
 
-const origin = fromEnvWithDefault(
-  'FRONTEND_ORIGIN',
-  '*',
-  'Frontend origin not provided. Using default value. Please populate the FRONTEND_ORIGIN environment variable for production deployments.'
-);
+const origin = fromEnv('FRONTEND_ORIGIN', {
+  defaultValue: '*',
+  warningMessage:
+    'Frontend origin not provided. Using default value. Please populate the FRONTEND_ORIGIN environment variable for production deployments.',
+});
 
 export default function (options: CorsOptions = {}): Middleware {
   return async (ctx, next) => {

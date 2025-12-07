@@ -1,16 +1,18 @@
+import { Buffer } from 'node:buffer';
+
 import { hash, verify } from '@felix/argon2';
 
-import { Buffer } from 'node:buffer';
-import { fromEnvWithDefault } from './fromEnvWithDefault.ts';
+import { fromEnv } from './fromEnv.ts';
 
 const defaultSecret = '6D7953757065725365637265744B6579';
 
 const secret = Buffer.from(
-  fromEnvWithDefault(
-    'HASH_SECRET',
-    defaultSecret,
-    'Hash secret not provided. Using default value. Please populate the HASH_SECRET environment variable for production deployments.'
-  )
+  fromEnv('HASH_SECRET', {
+    defaultValue: defaultSecret,
+    warningMessage:
+      'Hash secret not provided. Using default value. Please populate the HASH_SECRET environment variable for production deployments.',
+    fileExtension: true,
+  })
 );
 
 export async function hashPassword(password: string): Promise<string> {
