@@ -1,7 +1,11 @@
 services:
   redis:
     image: redis:8.2.3-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf
     network_mode: host
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+
   backend:
     image: denoland/deno:2.5.6
     depends_on:
@@ -11,15 +15,15 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_USER=doplace
-      - REDIS_PASSWORD=superSecretPassword
-      - REDIS_DB=
+      - REDIS_PASSWORD=to77eeBklb0fgA
       - FRONTEND_ORIGIN=http://localhost:8001
       - JWT_SECRET=NpKn6gLUMTfHt4hmHveDKRxibPK7fcP7
       - HASH_SECRET=TZtwd9j3AsQtai44jSyNDzbmfC8XETkz
     command: ["deno", "run", "dev"]
     volumes:
       - ./backend:/app
-      - ~/.cache/deno:/deno-dir
+      - ~/.cache/deno:/deno-dir # Speed up application start up by using the deno cache from the host
+
   frontend:
     image: oven/bun:1.3-debian
     depends_on:
