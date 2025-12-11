@@ -4,7 +4,7 @@ export type FromEnvWithDefaultOptions<T> = {
   /**
    * Fallback to this value is none is found.
    */
-  defaultValue?: T;
+  defaultValue?: string;
   /**
    * Warning message to display when falling back
    * to the default value. If unset, no message
