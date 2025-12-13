@@ -1,7 +1,7 @@
 import { Status } from '@oak/commons/status';
 import { Middleware } from '@oak/oak';
 
-export const runtimeErrorHandler: Middleware = async (ctx, next) => {
+const runtimeErrorHandler: Middleware = async (ctx, next) => {
   try {
     await next();
   } catch (error) {
@@ -11,3 +11,5 @@ export const runtimeErrorHandler: Middleware = async (ctx, next) => {
     console.error(error);
   }
 };
+
+export default runtimeErrorHandler;

@@ -3,7 +3,7 @@ import process from 'node:process';
 import { Application, Router } from '@oak/oak';
 
 import cors from './middleware/cors.ts';
-import { runtimeErrorHandler } from './middleware/runtimeError.ts';
+import { runtimeError } from './middleware/index.ts';
 import v1Router from './routes/v1/index.ts';
 
 const app = new Application();
@@ -17,7 +17,7 @@ app.use(
     allowHeaders: ['Content-Type'],
   })
 );
-app.use(runtimeErrorHandler);
+app.use(runtimeError);
 
 router.use('/api/v1', v1Router.routes());
 router.use('/api/v1', v1Router.allowedMethods());

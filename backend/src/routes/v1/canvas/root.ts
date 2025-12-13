@@ -1,7 +1,9 @@
 import { Status } from '@oak/commons/status';
-import { Context, Router } from '@oak/oak';
+import { Context, Middleware, Router } from '@oak/oak';
 
 import { getCanvas } from '../../../db/canvas.ts';
+import { compress } from '../../../middleware/index.ts';
+import { Boolean, fromEnv } from '../../../utils/fromEnv.ts';
 
 async function root(ctx: Context) {
   const canvas = await getCanvas();
@@ -11,6 +13,17 @@ async function root(ctx: Context) {
   ctx.response.headers.set('Content-Type', 'application/octet-stream');
 }
 
+const compressionEnabled = fromEnv('ENABLE_HTTP_COMPRESSION', {
+  type: Boolean,
+  allowDefaultValueInProd: true,
+  defaultValue: true,
+});
+
 export default function (router: Router) {
-  router.get('/', root);
+  const middlewares: Middleware[] = [];
+
+  if (compressionEnabled) middlewares.push(compress());
+
+  // @ts-ignore Typescript validation broken
+  router.get('/', ...middlewares, root);
 }

@@ -19,6 +19,7 @@ services:
       - FRONTEND_ORIGIN=http://localhost:8001
       - JWT_SECRET=NpKn6gLUMTfHt4hmHveDKRxibPK7fcP7
       - HASH_SECRET=TZtwd9j3AsQtai44jSyNDzbmfC8XETkz
+      - ENABLE_HTTP_COMPRESSION=false
     command: ["deno", "run", "dev"]
     volumes:
       - ./backend:/app
