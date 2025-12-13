@@ -6,6 +6,9 @@ A remake of Reddit's r/place for a school project.
 
 For development, you can use the provided docker compose file.
 
+> [!IMPORTANT]  
+> A default redis password and secrets are defined in the `docker-compose.yaml` file. It is for development purposes! **Do not** use these credentials in a production environment!
+
 ## Production
 
 ### Frontend
@@ -46,7 +49,7 @@ The backend use the following environment variables to connect to Redis and appl
 
 If your database use the default user and/or doesn't have a password you can skip setting them.
 
-If you don't set the `FRONTEND_ORIGIN` variable, the backend will use `*` for its CORS allowed origin which is not recommended in production!
+If you don't set the `FRONTEND_ORIGIN` variable, the backend will use `*` for its CORS allowed origin which is not allowed in production!
 
 #### Docker
 
