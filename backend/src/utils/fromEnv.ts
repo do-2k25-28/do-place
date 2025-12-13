@@ -2,7 +2,7 @@ import process from 'node:process';
 
 export type FromEnvWithDefaultOptions<T> = {
   /**
-   * Fallback to this value is none is found.
+   * Fallback to this value if none is found.
    */
   defaultValue?: T;
   /**

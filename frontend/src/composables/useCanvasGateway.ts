@@ -36,8 +36,8 @@ function canvasGateway() {
 
     ws.onerror = (event: Event) => {
       // On error, we close if not already closed and we retry
-      logger.error('An error occured, closing..', event);
-      if (!ws.CLOSED) ws.close(4000);
+      logger.error('An error occurred, closing..', event);
+      if (ws.readyState !== WebSocket.CLOSED) ws.close(4000);
     };
 
     ws.onmessage = (event) => {

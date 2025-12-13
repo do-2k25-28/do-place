@@ -2,7 +2,7 @@ import { Status } from '@oak/commons/status';
 import { Context, Router } from '@oak/oak';
 
 import { canvasEmitter, setPixel } from '../../../db/canvas.ts';
-import auth from '../../../middleware/auth.ts';
+import { auth } from '../../../middleware/index.ts';
 import { httpError } from '../../../utils/httpError.ts';
 
 const connections = new Set<WebSocket>();

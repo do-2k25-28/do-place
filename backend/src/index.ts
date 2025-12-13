@@ -2,8 +2,7 @@ import process from 'node:process';
 
 import { Application, Router } from '@oak/oak';
 
-import cors from './middleware/cors.ts';
-import { runtimeError } from './middleware/index.ts';
+import { cors, runtimeError } from './middleware/index.ts';
 import v1Router from './routes/v1/index.ts';
 
 const app = new Application();
