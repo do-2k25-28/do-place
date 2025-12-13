@@ -16,7 +16,7 @@ const password = fromEnv('REDIS_PASSWORD', {
 });
 
 const database = fromEnv('REDIS_DB', {
-  defaultValue: '',
+  defaultValue: 0,
   type: Number,
   allowDefaultValueInProd: true,
 });

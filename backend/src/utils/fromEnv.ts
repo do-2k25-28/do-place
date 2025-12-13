@@ -4,7 +4,7 @@ export type FromEnvWithDefaultOptions<T> = {
   /**
    * Fallback to this value is none is found.
    */
-  defaultValue?: string;
+  defaultValue?: T;
   /**
    * Warning message to display when falling back
    * to the default value. If unset, no message
@@ -62,7 +62,7 @@ export function fromEnv<T = string>(
     return type(file.trim());
   }
 
-  if (typeof options.defaultValue === 'string') {
+  if (options.defaultValue !== undefined) {
     if (
       process.env['MODE'] === 'production' &&
       options.allowDefaultValueInProd !== true
@@ -76,7 +76,7 @@ export function fromEnv<T = string>(
     if (typeof options.warningMessage === 'string')
       console.warn(options.warningMessage);
 
-    return type(options.defaultValue);
+    return options.defaultValue;
   }
 
   throw new Error(`Value for environment variable ${variableName} not found.`);
