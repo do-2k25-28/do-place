@@ -1,6 +1,6 @@
+import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 
-import { Buffer } from 'node:buffer';
 import { getClient, getProxyClient } from './client.ts';
 
 /**
@@ -10,7 +10,7 @@ import { getClient, getProxyClient } from './client.ts';
  * sending the entire string over
  * the network
  *
- * ngl this was written using AI,
+ * ngl this was made using AI,
  * cba to do lua
  */
 const createNullBytesScript = `
@@ -37,13 +37,18 @@ async function initCanvas(width: number, height: number) {
   return Buffer.alloc(bufferSize);
 }
 
+let canvasCache: Buffer;
+
 export async function getCanvas(): Promise<Buffer> {
+  if (canvasCache) return canvasCache;
+
   const client = await getProxyClient();
 
-  return (
+  canvasCache =
     ((await client.get('canvas:main')) as Buffer | null) ??
-    (await initCanvas(1000, 1000))
-  );
+    (await initCanvas(1000, 1000));
+
+  return canvasCache;
 }
 
 export async function setPixel(x: number, y: number, color: number) {
@@ -71,6 +76,15 @@ export async function initCanvasEmitter() {
   await subscriber.connect();
 
   subscriber.subscribe('canvas:place', (msg) => {
-    canvasEmitter.emit('place', JSON.parse(msg));
+    const payload = JSON.parse(msg);
+    canvasEmitter.emit('place', payload);
+
+    const offset = Math.trunc(payload.x / 2) + payload.y * (1000 / 2);
+
+    canvasCache[offset] =
+      payload.x % 2 === 0
+        ? (canvasCache[offset] =
+            (canvasCache[offset] & 0x0f) + (payload.color << 4))
+        : (canvasCache[offset] & 0xf0) + payload.color;
   });
 }
