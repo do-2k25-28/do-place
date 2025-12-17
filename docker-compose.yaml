@@ -13,7 +13,7 @@ services:
     network_mode: host
     working_dir: /app
     environment:
-      - REDIS_HOST=redis
+      - REDIS_HOST=127.0.0.1
       - REDIS_USER=doplace
       - REDIS_PASSWORD=to77eeBklb0fgA
       - FRONTEND_ORIGIN=http://localhost:8001

@@ -39,6 +39,7 @@ The backend use the following environment variables to connect to Redis and appl
 | Variable                  | Description                                                                         |
 | ------------------------- | ----------------------------------------------------------------------------------- |
 | `REDIS_HOST`              | Host of the Redis database                                                          |
+| `REDIS_PORT`              | Port on which Redis is listening                                                    |
 | `REDIS_DB`                | Redis database number                                                               |
 | `REDIS_USER`              | User to use to connect to Redis                                                     |
 | `REDIS_PASSWORD`          | Password to use to connect to Redis                                                 |

@@ -2,6 +2,14 @@ import { Buffer } from 'node:buffer';
 import { createClient, RESP_TYPES } from 'redis';
 import { fromEnv } from '../utils/fromEnv.ts';
 
+const host = fromEnv('REDIS_HOST');
+
+const port = fromEnv('REDIS_PORT', {
+  defaultValue: 6379,
+  allowDefaultValueInProd: true,
+  type: Number,
+});
+
 const username = fromEnv('REDIS_USER', {
   defaultValue: '',
   warningMessage:
@@ -22,7 +30,7 @@ const database = fromEnv('REDIS_DB', {
 });
 
 const client = createClient({
-  url: 'redis://127.0.0.1:6379',
+  url: `redis://${host}:${port}`,
   username,
   password,
   database,
