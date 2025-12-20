@@ -1,7 +1,7 @@
 import { useAccountStore, useCanvasStore } from '@/composables/store';
 import { BACKEND_URL, request } from '@/utils';
 
-export type Login = {
+export type UserId = {
   userId: string;
 };
 
@@ -9,7 +9,7 @@ export type AccountState =
   | {
       connected: false;
     }
-  | { connected: true; userId: string };
+  | ({ connected: true } & UserId);
 
 export type CanvasColor = { name: string; hex: string };
 
@@ -23,8 +23,15 @@ export function useApi() {
   const canvasStore = useCanvasStore();
   const authStore = useAccountStore();
 
+  const userLoggedIn = (userId: string) => {
+    authStore.connected = true;
+    authStore.id = userId;
+
+    localStorage.setItem('onceLoggedIn', String(true));
+  };
+
   const login = async (email: string, password: string): Promise<void> => {
-    const response = await request<Login>({
+    const response = await request<UserId>({
       endpoint: '/accounts/login',
       method: 'POST',
       body: { email, password },
@@ -32,8 +39,7 @@ export function useApi() {
     });
 
     if (response.success) {
-      authStore.connected = true;
-      authStore.id = response.userId;
+      userLoggedIn(response.userId);
     }
   };
 
@@ -48,12 +54,16 @@ export function useApi() {
   };
 
   const register = async (email: string, username: string, password: string): Promise<void> => {
-    await request({
+    const response = await request<UserId>({
       endpoint: '/accounts/register',
       method: 'POST',
       body: { email, username, password },
       credentials: true,
     });
+
+    if (response.success) {
+      userLoggedIn(response.userId);
+    }
   };
 
   const accountState = async (): Promise<void> => {
@@ -67,7 +77,7 @@ export function useApi() {
 
     // It's a bit faster not to use the store for the check
     if (response.connected) {
-      authStore.id = response.userId;
+      userLoggedIn(response.userId);
     }
   };
 

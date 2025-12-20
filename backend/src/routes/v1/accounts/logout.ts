@@ -1,8 +1,8 @@
 import { Context, Router, Status } from '@oak/oak';
-import { resetAuthCookie } from '../../../utils/cookies.ts';
+import { resetAuthCookies } from '../../../utils/cookies.ts';
 
 function logout(ctx: Context) {
-  resetAuthCookie(ctx);
+  resetAuthCookies(ctx);
   ctx.response.status = Status.OK;
   ctx.response.body = { success: true };
 }

@@ -3,14 +3,18 @@ import { z } from '@zod/zod';
 
 import * as accounts from '../../../db/accounts.ts';
 import { body, validate } from '../../../middleware/index.ts';
-import { verifyPassword } from '../../../utils/argon2.ts';
-import { resetAuthCookie, setAuthCookie } from '../../../utils/cookies.ts';
+import { createRefreshToken, verifyPassword } from '../../../utils/auth.ts';
+import {
+  resetAuthCookies,
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+} from '../../../utils/cookies.ts';
 import { httpError } from '../../../utils/httpError.ts';
 import { createJWT } from '../../../utils/jwt.ts';
 
 const schema = z.object({
   email: z.email(),
-  password: z.string().min(4).max(128),
+  password: z.string().min(4).max(256),
 });
 
 type Body = z.infer<typeof schema>;
@@ -20,7 +24,7 @@ async function login(ctx: Context) {
 
   const userId = await accounts.getUserIdByEmail(body.email);
   if (userId === null) {
-    resetAuthCookie(ctx);
+    resetAuthCookies(ctx);
     ctx.response.status = Status.NotFound;
     ctx.response.body = httpError('user_not_found');
     return;
@@ -32,14 +36,18 @@ async function login(ctx: Context) {
   const validPassword = await verifyPassword(password, body.password);
 
   if (!validPassword) {
-    resetAuthCookie(ctx);
+    resetAuthCookies(ctx);
     ctx.response.status = Status.Unauthorized;
     ctx.response.body = httpError('invalid_password');
     return;
   }
 
   const jwt = await createJWT(userId);
-  setAuthCookie(ctx, jwt);
+  setAccessTokenCookie(ctx, jwt);
+
+  const { token, hash } = createRefreshToken();
+  setRefreshTokenCookie(ctx, token);
+  await accounts.addRefreshToken(hash, userId);
 
   ctx.response.status = Status.OK;
   ctx.response.body = { success: true, userId };

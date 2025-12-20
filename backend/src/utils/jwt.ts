@@ -1,4 +1,10 @@
-import { JWTPayload, signJWT, validateJWT } from '@cross/jwt';
+import {
+  JWTExpiredError,
+  JWTPayload,
+  JWTValidationError,
+  signJWT,
+  validateJWT,
+} from '@cross/jwt';
 
 import { fromEnv } from './fromEnv.ts';
 
@@ -9,8 +15,8 @@ const secret = fromEnv('JWT_SECRET', {
   fileExtension: true,
 });
 
-export const expiresInS = '2d';
-export const expiresIn = 60 * 60 * 24 * 2;
+export const expiresInS = '1d';
+export const expiresIn = 60 * 60 * 24 * 1;
 
 export async function createJWT(id: string) {
   return await signJWT({ id }, secret, { expiresIn: expiresInS });
@@ -18,11 +24,17 @@ export async function createJWT(id: string) {
 
 export async function verifyJWT(
   jwt: string
-): Promise<{ valid: true; payload: JWTPayload } | { valid: false }> {
+): Promise<
+  { valid: true; payload: JWTPayload } | { valid: false; epxired: boolean }
+> {
   try {
     const payload = await validateJWT(jwt, secret);
     return { valid: true, payload };
-  } catch (_) {
-    return { valid: false };
+  } catch (error) {
+    if (error instanceof JWTValidationError) {
+      return { valid: false, epxired: error instanceof JWTExpiredError };
+    }
+
+    throw error;
   }
 }

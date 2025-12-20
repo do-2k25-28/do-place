@@ -1,3 +1,4 @@
+import { refreshTokenTTL } from '../utils/auth.ts';
 import { getClient } from './client.ts';
 
 export type RedisUser = {
@@ -42,4 +43,14 @@ export async function getUserPassword(id: string): Promise<string | null> {
   return (await client.json.get(`account:${id}`, { path: '.password' })) as
     | string
     | null;
+}
+
+export async function addRefreshToken(
+  refreshTokenHash: string,
+  userId: string
+): Promise<void> {
+  const client = await getClient();
+  await client.set(refreshTokenHash, userId, {
+    expiration: { type: 'EX', value: refreshTokenTTL },
+  });
 }

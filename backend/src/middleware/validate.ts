@@ -19,7 +19,8 @@ export default function (schema: z.ZodType): Middleware {
       ctx.response.status = Status.BadRequest;
       ctx.response.body = {
         success: false,
-        errors: JSON.parse(error.message),
+        error: 'validation',
+        issues: error.issues,
       };
       return;
     }

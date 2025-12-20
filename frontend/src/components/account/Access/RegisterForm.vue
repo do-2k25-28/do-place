@@ -7,36 +7,49 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const schema = z.object({
-  email: z.email('Invalid email address'),
-  password: z
+const passwordSchema = () =>
+  z
     .string()
     .min(4, 'Password must be at least 4 characters')
     .max(256, 'Password must be at most 256 characters')
     .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
-});
+    .regex(/[!@#$%^&*(),.?":{}|<>\\\/]/, 'Password must contain at least one special character');
+
+const schema = z
+  .object({
+    email: z.email('Invalid email address'),
+    username: z
+      .string()
+      .min(3, 'Username must be at least 3 characters')
+      .max(16, 'Username must be at most 16 characters')
+      .regex(/^[A-Za-z0-9]{3,16}$/g, 'Username may only contain letters and numbers'),
+    password: passwordSchema(),
+    confirmPassword: passwordSchema(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 const api = useApi();
 const { formData, formErrors, onSubmit, errorFieldClasses, loading } = useForm(
   schema,
   {
     email: '',
+    username: '',
     password: '',
+    confirmPassword: '',
   },
   async (formData, showError) => {
     try {
-      await api.login(formData.email, formData.password);
+      await api.register(formData.email, formData.username, formData.password);
       emit('close');
     } catch (error) {
       if (!(error instanceof Error)) return;
 
       switch (error.message) {
-        case 'user_not_found':
-          showError('email', 'User not found');
-          break;
-        case 'invalid_password':
-          showError('password', 'Invalid password');
+        case 'user_already_exists':
+          showError('email', 'Email address already in use.');
           break;
         default:
           console.error(error);
@@ -66,12 +79,27 @@ const { formData, formErrors, onSubmit, errorFieldClasses, loading } = useForm(
     </div>
 
     <div class="field">
+      <label for="username">Username</label>
+      <input
+        type="text"
+        name="username"
+        id="username"
+        autocomplete="username"
+        v-model="formData.username"
+        formnovalidate
+        :class="errorFieldClasses('username')"
+        :disabled="loading"
+      />
+      <span v-if="formErrors.username" class="form-error">{{ formErrors.username }}</span>
+    </div>
+
+    <div class="field">
       <label for="password">Password</label>
       <input
         type="password"
         name="password"
         id="password"
-        autocomplete="current-password"
+        autocomplete="new-password"
         v-model="formData.password"
         :class="errorFieldClasses('password')"
         :disabled="loading"
@@ -79,7 +107,23 @@ const { formData, formErrors, onSubmit, errorFieldClasses, loading } = useForm(
       <span v-if="formErrors.password" class="form-error">{{ formErrors.password }}</span>
     </div>
 
-    <button type="submit" :disabled="loading">Login</button>
+    <div class="field">
+      <label for="confirm-password">Confirm password</label>
+      <input
+        type="password"
+        name="confirm-password"
+        id="confirm-password"
+        autocomplete="new-password"
+        v-model="formData.confirmPassword"
+        :class="errorFieldClasses('confirmPassword')"
+        :disabled="loading"
+      />
+      <span v-if="formErrors.confirmPassword" class="form-error">{{
+        formErrors.confirmPassword
+      }}</span>
+    </div>
+
+    <button type="submit" :disabled="loading">Register</button>
   </form>
 </template>
 

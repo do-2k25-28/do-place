@@ -21,7 +21,7 @@ api.accountState();
   --bg-secondary: #252525;
   --bg-surface: #2e2e2e;
   --border-color: #3a3a3a;
-  --accent-primary: #6c9eff;
+  --accent-primary: #436fc6;
   --accent-secondary: #ffdd82;
   --success: #7bd88f;
   --danger: #ff6b6b;

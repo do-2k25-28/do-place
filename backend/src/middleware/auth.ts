@@ -6,16 +6,17 @@ import { verifyJWT } from '../utils/jwt.ts';
 
 export default function (): Middleware {
   return async (ctx, next) => {
-    const reject = () => {
+    const reject = (message?: string) => {
       ctx.response.status = Status.Unauthorized;
-      ctx.response.body = httpError('unauthorized');
+      ctx.response.body = httpError(message ?? 'unauthorized');
     };
 
-    const jwt = await ctx.cookies.get('jwt');
-    if (!jwt) return reject();
+    const jwt = await ctx.cookies.get('token');
+    if (!jwt) return reject('no_cookie');
 
     const verif = await verifyJWT(jwt);
-    if (!verif.valid) return reject();
+    if (!verif.valid)
+      return reject(verif.epxired ? 'token_expired' : 'invalid_token');
 
     ctx.state.userId = verif.payload.id;
 

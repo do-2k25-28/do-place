@@ -2,21 +2,21 @@ import { JWTPayload } from '@cross/jwt';
 import { Status } from '@oak/commons/status';
 import { Context, Router } from '@oak/oak';
 
-import { resetAuthCookie } from '../../../utils/cookies.ts';
+import { resetAuthCookies } from '../../../utils/cookies.ts';
 import { verifyJWT } from '../../../utils/jwt.ts';
 
 async function state(ctx: Context) {
   function response(connected: false): void;
   function response(connected: true, payload: JWTPayload): void;
   function response(connected: boolean, payload?: JWTPayload): void {
-    if (!connected) resetAuthCookie(ctx);
+    if (!connected) resetAuthCookies(ctx);
 
     ctx.response.status = Status.OK;
     // If payload is undefined, values will be too and
     // oak will remove the fields in the final object
     ctx.response.body = { success: true, connected, userId: payload?.id };
   }
-  const jwt = await ctx.cookies.get('jwt');
+  const jwt = await ctx.cookies.get('token');
   if (!jwt) return response(false);
 
   const result = await verifyJWT(jwt);
