@@ -47,7 +47,7 @@ async function login(ctx: Context) {
 
   const { token, hash } = createRefreshToken();
   setRefreshTokenCookie(ctx, token);
-  await accounts.addRefreshToken(hash, userId);
+  await accounts.addRefreshTokenHash(hash, userId);
 
   ctx.response.status = Status.OK;
   ctx.response.body = { success: true, userId };

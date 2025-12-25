@@ -27,6 +27,10 @@ export async function verifyPassword(
   return await verify(hash, password, secret);
 }
 
+export function hashRefreshToken(token: string): string {
+  return createHash('sha256').update(token).digest().toString('hex');
+}
+
 /**
  * Generates a random 522 bit string
  * @returns The refresh token and its sha256
@@ -36,7 +40,7 @@ export function createRefreshToken(): { token: string; hash: string } {
 
   return {
     token,
-    hash: createHash('sha256').update(token).digest().toString('hex'),
+    hash: hashRefreshToken(token),
   };
 }
 

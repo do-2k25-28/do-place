@@ -45,12 +45,19 @@ export async function getUserPassword(id: string): Promise<string | null> {
     | null;
 }
 
-export async function addRefreshToken(
-  refreshTokenHash: string,
+export async function addRefreshTokenHash(
+  hash: string,
   userId: string
 ): Promise<void> {
   const client = await getClient();
-  await client.set(refreshTokenHash, userId, {
+  await client.set(`refresh-token:${hash}`, userId, {
     expiration: { type: 'EX', value: refreshTokenTTL },
   });
+}
+
+export async function getUserIdByRefreshTokenHash(
+  hash: string
+): Promise<string | null> {
+  const client = await getClient();
+  return await client.get(`refresh-token:${hash}`);
 }

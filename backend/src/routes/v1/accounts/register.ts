@@ -58,7 +58,7 @@ async function register(ctx: Context) {
 
   const { token, hash } = createRefreshToken();
   setRefreshTokenCookie(ctx, token);
-  await accounts.addRefreshToken(hash, id);
+  await accounts.addRefreshTokenHash(hash, id);
 
   ctx.response.body = { success: true, userId: id };
 }
