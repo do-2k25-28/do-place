@@ -1,7 +1,12 @@
 import { Status } from '@oak/commons/status';
 import { Context, Router } from '@oak/oak';
 
-import { canvasEmitter, setPixel } from '../../../db/canvas.ts';
+import {
+  canPlace,
+  canvasEmitter,
+  setPixel,
+  setTimeout,
+} from '../../../db/canvas.ts';
 import { auth } from '../../../middleware/index.ts';
 import { httpError } from '../../../utils/httpError.ts';
 
@@ -39,7 +44,16 @@ function gateway(ctx: Context) {
       const data = JSON.parse(event.data);
 
       if (data.type === 'place') {
-        await setPixel(data.x, data.y, data.color);
+        const userId = ctx.state.userId as string;
+
+        if (await canPlace(userId)) {
+          await Promise.all([
+            setPixel(data.x, data.y, data.color),
+            setTimeout(userId, 60),
+          ]);
+        } else {
+          ws.send(JSON.stringify({ type: 'error', message: 'timed out' }));
+        }
       }
     } catch (_) {
       ws.close(1007);

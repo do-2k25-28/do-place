@@ -67,6 +67,28 @@ export async function setPixel(x: number, y: number, color: number) {
   await client.publish('canvas:place', JSON.stringify({ x, y, color }));
 }
 
+export async function canPlace(userId: string): Promise<boolean> {
+  const client = await getClient();
+  const val = await client.get(`timeout:${userId}`);
+  return val === null;
+}
+
+/**
+ * Sets a timeout for the given user
+ * @param userId Identifier of the user to set the timeout for
+ * @param timeout Timeout in seconds (not a timestamp) (e.g. `5` for five seconds from now)
+ */
+export async function setTimeout(
+  userId: string,
+  timeout: number
+): Promise<void> {
+  const client = await getClient();
+
+  client.set(`timeout:${userId}`, 1, {
+    expiration: { type: 'EX', value: timeout },
+  });
+}
+
 export const canvasEmitter: EventEmitter = new EventEmitter();
 
 export async function initCanvasEmitter() {
