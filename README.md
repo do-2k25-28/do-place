@@ -2,7 +2,7 @@
 
 A remake of Reddit's r/place for a school project.
 
-## Launch the stack
+## Launching the stack
 
 Start by cloning this repository, also make sure to be on the `polytech` branch.
 
