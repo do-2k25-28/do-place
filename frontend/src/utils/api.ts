@@ -1,6 +1,6 @@
 import { Logger } from './logger';
 
-export const BACKEND_URL = new URL(import.meta.env.VITE_BACKEND_URL);
+export const BACKEND_URL = new URL(import.meta.env.VITE_BACKEND_URL, globalThis.origin);
 
 type RequestOptions<Binary extends boolean = false> = {
   endpoint: string;
