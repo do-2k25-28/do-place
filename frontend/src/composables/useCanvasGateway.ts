@@ -50,9 +50,14 @@ function canvasGateway() {
 
   init();
 
-  return () => {
-    logger.debug('Disconnecting gateway');
-    ws.close();
+  return {
+    close: () => {
+      logger.debug('Disconnecting gateway');
+      ws.close();
+    },
+    place: (x: number, y: number, color: number) => {
+      ws.send(JSON.stringify({ type: 'place', x, y, color }));
+    },
   };
 }
 
@@ -60,15 +65,24 @@ export function useCanvasGateway() {
   const store = useAccountStore();
 
   let close: (() => void) | undefined;
+  let place: ((x: number, y: number, color: number) => void) | undefined;
 
   const connect = () => {
     // If we login and not already connected, we open the gateway
     // If we logout, we close the gateway
-    if (store.connected && typeof close !== 'function') close = canvasGateway();
-    else if (typeof close === 'function') close();
+    if (store.connected && typeof close !== 'function') {
+      const { close: _close, place: _place } = canvasGateway();
+      close = _close;
+      place = _place;
+    } else if (typeof close === 'function') close();
   };
 
   watch(() => store.connected, connect);
 
-  return { connectToGateway: connect };
+  return {
+    connectToGateway: connect,
+    place: (x: number, y: number, color: number) => {
+      place?.(x, y, color);
+    },
+  };
 }

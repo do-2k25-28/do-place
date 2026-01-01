@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 
 import {
+  useAccountStore,
   useApi,
   useCanvas,
   useCanvasControls,
@@ -12,11 +13,12 @@ import {
 const canvasContainer = useTemplateRef('canvas-container');
 const canvasEl = useTemplateRef('canvas-el');
 
-const store = useCanvasStore();
+const canvasStore = useCanvasStore();
+const authStore = useAccountStore();
 const api = useApi();
 const { initializeCanvas, drawCanvas } = useCanvas();
 useCanvasControls(canvasContainer);
-const { connectToGateway } = useCanvasGateway();
+const { connectToGateway, place } = useCanvasGateway();
 
 function onWindowResize() {
   if (!canvasEl.value) return;
@@ -29,15 +31,42 @@ function onWindowResize() {
 // Re render canvas when zoom/offset changes
 watch(
   () => ({
-    scale: store.scale,
-    offsetX: store.offsetX,
-    offsetY: store.offsetY,
+    scale: canvasStore.scale,
+    offsetX: canvasStore.offsetX,
+    offsetY: canvasStore.offsetY,
   }),
   () => {
     drawCanvas();
   },
   { deep: true },
 );
+
+function handleClick(event: PointerEvent): void {
+  if (!authStore.connected) return;
+
+  const canvas = event.target as HTMLCanvasElement;
+  const rect = canvas.getBoundingClientRect();
+
+  // Get click position relative to canvas
+  const screenX = event.clientX - rect.left;
+  const screenY = event.clientY - rect.top;
+
+  // Convert screen coordinates to canvas pixel coordinates
+  const canvasX = (screenX - canvasStore.offsetX) / canvasStore.scale;
+  const canvasY = (screenY - canvasStore.offsetY) / canvasStore.scale;
+
+  // Floor to get the pixel index
+  const pixelX = Math.floor(canvasX);
+  const pixelY = Math.floor(canvasY);
+
+  // Check if click is within bounds
+  if (pixelX >= 0 && pixelX < canvasStore.width && pixelY >= 0 && pixelY < canvasStore.height) {
+    if (canvasStore.timeout === null) {
+      place(pixelX, pixelY, canvasStore.selectedColor);
+      canvasStore.timeout = Date.now() + 1000 * 60;
+    }
+  }
+}
 
 onMounted(async () => {
   window.addEventListener('resize', () => onWindowResize());
@@ -57,7 +86,7 @@ onUnmounted(() => {
 
 <template>
   <div id="canvas" ref="canvas-container">
-    <canvas ref="canvas-el"></canvas>
+    <canvas ref="canvas-el" @click="handleClick"></canvas>
   </div>
 </template>
 
