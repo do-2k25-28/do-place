@@ -50,7 +50,7 @@ docker compose up
 
 ## Using the app
 
-You can open http://localhost:8080 in your prefered browser.
+You can open http://localhost:8081 in your prefered browser.
 
 In its current state the app doesn't have many features. However, you can already create an account, login and start drawing on the canvas.
 
