@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccountStore } from '@/composables';
+import { useAccountStore, useApi } from '@/composables';
 import { useTemplateRef } from 'vue';
 import AccessModal from './account/AccessModal.vue';
 import AccountModalButton from './account/AccountModalButton.vue';
@@ -7,12 +7,13 @@ import ColorSelector from './ColorSelector.vue';
 import Timeout from './Timeout.vue';
 
 const authStore = useAccountStore();
+const api = useApi();
 
 const accessModal = useTemplateRef('access-modal');
 
-function openAccountModal() {
-  if (authStore.connected) {
-  } else accessModal.value?.show();
+async function openAccountModal() {
+  if (authStore.connected) await api.logout();
+  else accessModal.value?.show();
 }
 </script>
 

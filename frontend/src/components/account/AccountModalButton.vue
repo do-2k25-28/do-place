@@ -12,7 +12,7 @@ const emit = defineEmits<{
   <div class="surface">
     <button @click="emit('click')">
       <span class="material-symbols-outlined">
-        {{ store.connected ? 'account_circle' : 'login' }}
+        {{ store.connected ? 'logout' : 'login' }}
       </span>
     </button>
   </div>
