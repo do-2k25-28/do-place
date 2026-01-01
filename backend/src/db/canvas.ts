@@ -72,7 +72,12 @@ export const canvasEmitter: EventEmitter = new EventEmitter();
 export async function initCanvasEmitter() {
   const client = await getClient();
 
-  const subscriber = client.duplicate();
+  const subscriber = client.duplicate({
+    socket: {
+      keepAlive: true,
+      keepAliveInitialDelay: 10,
+    },
+  });
   await subscriber.connect();
 
   subscriber.subscribe('canvas:place', (msg) => {
