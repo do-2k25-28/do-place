@@ -2,62 +2,61 @@
 
 A remake of Reddit's r/place for a school project.
 
-## Development
+## Launch the stack
 
-For development, you can use the provided docker compose file.
+Start by cloning this repository, also make sure to be on the `polytech` branch.
 
-> [!IMPORTANT]  
-> A default redis password and secrets are defined in the `docker-compose.yaml` file. It is for development purposes! **Do not** use these credentials in a production environment!
+### Setting up secrets
 
-## Production
+Before jumping in your terminal like a maniac, a bit of manual configuration is required. This project uses Argon2 and JWTs which both requires secrets. Even though the Redis server is not exposed, it is required to setup a user when setting up a production environment.
 
-### Frontend
+Start by generating a strong password for Redis. Put the password in a file called `redis.txt` in the root directory of the project.
 
-To build the frontend, you first need to specify what the URL of the backend will be. To do so, set the `VITE_BACKEND_URL` before running the build command.
+The `docker-compose.yaml` is configured to use the `doplace` user. You can either reuse this username or change the associated environment variable in the compose file.
 
-For example:
+Unfortunately, Redis doesn't offer user/password definition in environment variables so we need to manually create a config file (no we are not going to use the Bitnami image because I don't want my project to break if they decide to do something funny again). Continue by creating a `redis.conf` in the root directory and paste de following
 
-```bash
-cd frontend
-export VITE_BACKEND_URL=https://place.polydo.dev/api/v1
-bun run build
+```
+user default off
+user doplace on >[MY_STRONG_PASSWORD] ~* &* +@all
 ```
 
-#### Docker
+Replace `[MY_STRONG_PASSWORD]` with your own. Do not remove the `>`!
 
-To set the backend URL when building a Docker image, use the build arg `BACKEND_URL`. If not set, the URL will be `/api/v1` (same host as your frontend).
+The JWT secret needs to be at least 256 bits long. That means you need to have at least 32 characters in the secret. Put it in `jwt.txt`.
 
-```bash
-cd frontend
-docker build --build-arg BACKEND_URL="https://place.polydo.dev/api/v1" .
+Same thing for the Argon2 secret, put it in `hash.txt`.
+
+You should end up with the following files in the root directory of the project.
+
+```
+.
+├── LICENSE
+├── README.md
+├── docker-compose.yaml
+├── hash.txt
+├── jwt.txt
+├── redis.conf
+└── redis.txt
 ```
 
-### Backend
+### Docker
 
-The backend use the following environment variables to connect to Redis and apply CORS rules:
+Once those secrets are setup, we can create and start the containers by running
 
-| Variable                  | Description                                                                                                 |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `REDIS_HOST`              | Host of the Redis database                                                                                  |
-| `REDIS_PORT`              | Port on which Redis is listening                                                                            |
-| `REDIS_DB`                | Redis database number                                                                                       |
-| `REDIS_USER`              | User to use to connect to Redis                                                                             |
-| `REDIS_PASSWORD`          | Password to use to connect to Redis                                                                         |
-| `FRONTEND_ORIGIN`         | Origin of the frontend                                                                                      |
-| `JWT_SECRET`              | Secret to use to sign JWT                                                                                   |
-| `HASH_SECRET`             | Secret to pass to argon2                                                                                    |
-| `ENABLE_HTTP_COMPRESSION` | Whether or not to enable gzip compression for the canvas route. Defaults to `true`.                         |
-| `CLUSTER`                 | Whether or not to generate a node identifier on start up and add it to the HTTP headers of every responses. |
-
-If your database use the default user and/or doesn't have a password you can skip setting them.
-
-If you don't set the `FRONTEND_ORIGIN` variable, the backend will use `*` for its CORS allowed origin which is not allowed in production!
-
-#### Docker
-
-No special configuration required here. Just build the image with the following command:
-
-```bash
-cd backend
-docker build .
+```sh
+docker compose up
 ```
+
+## Using the app
+
+You can open http://localhost:8080 in your prefered browser.
+
+In its current state the app doesn't have many features. However, you can already create an account, login and start drawing on the canvas.
+
+You can either login and register by using the button in the top rigt hand corner. You'll be prompted to register if you never did before otherwise you can login.
+![Account](docs/account.jpg)
+
+Once logged in, you can choose what color you want to use and you can click on the canvas to place a pixel. You can place a pixel once per minute.
+
+![Drawing](docs/drawing.jpg)

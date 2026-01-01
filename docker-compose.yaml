@@ -7,34 +7,39 @@ services:
       - ./redis.conf:/etc/redis/redis.conf
 
   backend:
-    image: denoland/deno:2.5.6
+    image: gitlab.polytech.umontpellier.fr:5050/dorian.richard/do-place:1.0.0
     depends_on:
       - redis
-    network_mode: host
-    working_dir: /app
     environment:
-      - REDIS_HOST=127.0.0.1
+      - REDIS_HOST=redis
       - REDIS_USER=doplace
-      - REDIS_PASSWORD=to77eeBklb0fgA
-      - FRONTEND_ORIGIN=http://localhost:8002
-      - JWT_SECRET=NpKn6gLUMTfHt4hmHveDKRxibPK7fcP7
-      - HASH_SECRET=TZtwd9j3AsQtai44jSyNDzbmfC8XETkz
-      - ENABLE_HTTP_COMPRESSION=false
-      - PORT=8000
-    command: ["deno", "run", "dev"]
-    volumes:
-      - ./backend:/app
-      - ~/.cache/deno:/deno-dir # Speed up application start up by using the deno cache from the host
+      - REDIS_PASSWORD_FILE=/run/secrets/redis
+      - FRONTEND_ORIGIN=http://localhost:8081
+      - JWT_SECRET_FILE=/run/secrets/jwt
+      - HASH_SECRET_FILE=/run/secrets/hash
+      - ENABLE_HTTP_COMPRESSION=true
+    ports:
+      - "8080:80"
+    secrets:
+      - redis
+      - jwt
+      - hash
 
   frontend:
-    image: oven/bun:1.3-debian
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - BACKEND_URL=http://localhost:8080/api/v1
     depends_on:
       - backend
-    network_mode: host
-    working_dir: /app
-    environment:
-      - VITE_BACKEND_URL=http://localhost:8000/api/v1
-      - VITE_PORT=8002
-    command: ["bun", "run", "dev"]
-    volumes:
-      - ./frontend:/app
+    ports:
+      - "8081:80"
+
+secrets:
+  redis:
+    file: ./redis.txt
+  jwt:
+    file: ./jwt.txt
+  hash:
+    file: ./hash.txt
