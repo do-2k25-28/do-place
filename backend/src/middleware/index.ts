@@ -4,3 +4,4 @@ export { default as compress } from './compress.ts';
 export { default as cors } from './cors.ts';
 export { default as runtimeError } from './runtimeError.ts';
 export { default as validate } from './validate.ts';
+export { default as cluster } from './cluster.ts';

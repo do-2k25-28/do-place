@@ -2,8 +2,15 @@ import process from 'node:process';
 
 import { Application, Router } from '@oak/oak';
 
-import { cors, runtimeError } from './middleware/index.ts';
+import { cors, runtimeError, cluster } from './middleware/index.ts';
 import v1Router from './routes/v1/index.ts';
+import { fromEnv } from './utils/fromEnv.ts';
+
+const inCluster = fromEnv('CLUSTER', {
+  defaultValue: false,
+  allowDefaultValueInProd: true,
+  type: Boolean,
+});
 
 const app = new Application();
 
@@ -17,6 +24,7 @@ app.use(
   })
 );
 app.use(runtimeError);
+if (inCluster) app.use(cluster());
 
 router.use('/api/v1', v1Router.routes());
 router.use('/api/v1', v1Router.allowedMethods());
