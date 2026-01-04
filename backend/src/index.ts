@@ -32,7 +32,11 @@ router.use('/api/v1', v1Router.allowedMethods());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-const port = process.env.MODE === 'production' ? 80 : 8000;
+let port = 80;
+
+const envPort = process.env['PORT'];
+if (envPort) port = Number(envPort);
+else if (process.env.MODE !== 'production') port = 8000;
 
 app.addEventListener('listen', () => {
   console.log('Server listening on port', port);

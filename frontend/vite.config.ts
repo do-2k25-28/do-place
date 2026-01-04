@@ -3,6 +3,11 @@ import { fileURLToPath, URL } from 'node:url';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
+let port = 8000;
+
+let envPort = process.env['VITE_PORT'];
+if (envPort) port = Number(envPort);
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
@@ -12,7 +17,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 8001,
+    port,
     strictPort: true,
   },
 });
