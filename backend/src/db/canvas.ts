@@ -100,9 +100,24 @@ export async function initCanvasEmitter() {
       keepAliveInitialDelay: 10,
     },
   });
+
+  subscriber.on('error', (err: Error) => {
+    console.error('Redis subscriber error:', err);
+  });
+
+  subscriber.on('reconnecting', () => {
+    console.log('Redis subscriber reconnecting...');
+  });
+
+  subscriber.on('end', () => {
+    console.log('Redis subscriber connection ended');
+  });
+
   await subscriber.connect();
 
-  subscriber.subscribe('canvas:place', (msg) => {
+  subscriber.subscribe('canvas:place', async (msg) => {
+    if (!canvasCache) await getCanvas();
+
     const payload = JSON.parse(msg);
     canvasEmitter.emit('place', payload);
 
