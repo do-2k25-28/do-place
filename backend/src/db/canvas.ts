@@ -37,20 +37,18 @@ async function initCanvas(width: number, height: number) {
   return Buffer.alloc(bufferSize);
 }
 
-// let canvasCache: Buffer;
+let canvasCache: Buffer;
 
 export async function getCanvas(): Promise<Buffer> {
-  // if (canvasCache) return canvasCache;
+  if (canvasCache) return canvasCache;
 
   const client = await getProxyClient();
 
-  // canvasCache =
-  return (
+  canvasCache =
     ((await client.get('canvas:main')) as Buffer | null) ??
-    (await initCanvas(1000, 1000))
-  );
+    (await initCanvas(1000, 1000));
 
-  // return canvasCache;
+  return canvasCache;
 }
 
 export async function setPixel(x: number, y: number, color: number) {
@@ -108,12 +106,12 @@ export async function initCanvasEmitter() {
     const payload = JSON.parse(msg);
     canvasEmitter.emit('place', payload);
 
-    // const offset = Math.trunc(payload.x / 2) + payload.y * (1000 / 2);
+    const offset = Math.trunc(payload.x / 2) + payload.y * (1000 / 2);
 
-    // canvasCache[offset] =
-    //   payload.x % 2 === 0
-    //     ? (canvasCache[offset] =
-    //         (canvasCache[offset] & 0x0f) + (payload.color << 4))
-    //     : (canvasCache[offset] & 0xf0) + payload.color;
+    canvasCache[offset] =
+      payload.x % 2 === 0
+        ? (canvasCache[offset] =
+            (canvasCache[offset] & 0x0f) + (payload.color << 4))
+        : (canvasCache[offset] & 0xf0) + payload.color;
   });
 }
