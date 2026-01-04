@@ -2,14 +2,16 @@ import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 
 import type { CanvasColor } from './useApi';
+import { getDefaultOffset, getDefaultScale } from '@/utils';
 
 export const useCanvasStore = defineStore(
   'canvas',
   () => {
-    const scale = ref(1);
+    const scale = ref(getDefaultScale(1000));
 
-    const offsetX = ref(0);
-    const offsetY = ref(0);
+    const defaultOffset = getDefaultOffset(1000 * scale.value, 1000 * scale.value);
+    const offsetX = ref(defaultOffset.x);
+    const offsetY = ref(defaultOffset.y);
 
     const width = ref(0);
     const height = ref(0);
