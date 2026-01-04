@@ -60,10 +60,6 @@ function gateway(ctx: Context) {
     }
   };
 
-  ws.onerror = (err) => {
-    console.error('err', err);
-  };
-
   ws.onclose = () => {
     connections.delete(ws);
   };
