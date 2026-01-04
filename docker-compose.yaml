@@ -1,10 +1,10 @@
 services:
   redis:
-    image: redis:8.2.3-alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
+    image: redis/redis-stack-server:7.4.0-v8
+    command: redis-server /etc/redis/redis.conf
     network_mode: host
     volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis.conf:/etc/redis/redis.conf
 
   backend:
     image: denoland/deno:2.5.6
