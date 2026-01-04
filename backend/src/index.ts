@@ -5,6 +5,7 @@ import { Application, Router } from '@oak/oak';
 import { cors, runtimeError, cluster } from './middleware/index.ts';
 import v1Router from './routes/v1/index.ts';
 import { fromEnv } from './utils/fromEnv.ts';
+import logger from './middleware/logger.ts';
 
 const inCluster = fromEnv('CLUSTER', {
   defaultValue: false,
@@ -16,6 +17,8 @@ const app = new Application();
 
 const router = new Router();
 
+app.use(runtimeError);
+app.use(logger());
 app.use(
   cors({
     origin: 'http://localhost:5173',
@@ -23,7 +26,6 @@ app.use(
     allowHeaders: ['Content-Type'],
   })
 );
-app.use(runtimeError);
 if (inCluster) app.use(cluster());
 
 router.use('/api/v1', v1Router.routes());
