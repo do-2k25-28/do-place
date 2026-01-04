@@ -1,6 +1,14 @@
 import { Middleware } from '@oak/oak';
 
-const nodeId = crypto.randomUUID();
+import { fromEnv } from '../utils/fromEnv.ts';
+
+export const nodeId = crypto.randomUUID();
+
+export const inCluster = fromEnv('CLUSTER', {
+  defaultValue: false,
+  allowDefaultValueInProd: true,
+  type: Boolean,
+});
 
 export default function (): Middleware {
   return async (ctx, next) => {

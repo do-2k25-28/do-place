@@ -9,6 +9,7 @@ import {
 } from '../../../db/canvas.ts';
 import { auth } from '../../../middleware/index.ts';
 import { httpError } from '../../../utils/httpError.ts';
+import { inCluster, nodeId } from '../../../middleware/cluster.ts';
 
 const connections = new Set<WebSocket>();
 
@@ -36,6 +37,14 @@ function gateway(ctx: Context) {
 
   ws.onopen = () => {
     connections.add(ws);
+
+    if (inCluster)
+      ws.send(
+        JSON.stringify({
+          type: 'cluster',
+          servedBy: nodeId,
+        })
+      );
   };
 
   ws.onmessage = async (event) => {
