@@ -2,16 +2,9 @@ import process from 'node:process';
 
 import { Application, Router } from '@oak/oak';
 
-import { cors, runtimeError, cluster } from './middleware/index.ts';
+import { cors, runtimeError, cluster, logger } from './middleware/index.ts';
 import v1Router from './routes/v1/index.ts';
-import { fromEnv } from './utils/fromEnv.ts';
-import logger from './middleware/logger.ts';
-
-const inCluster = fromEnv('CLUSTER', {
-  defaultValue: false,
-  allowDefaultValueInProd: true,
-  type: Boolean,
-});
+import { inCluster } from './middleware/cluster.ts';
 
 const app = new Application();
 

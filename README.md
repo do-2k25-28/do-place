@@ -36,17 +36,18 @@ docker build --build-arg BACKEND_URL="https://place.polydo.dev/api/v1" .
 
 The backend use the following environment variables to connect to Redis and apply CORS rules:
 
-| Variable                  | Description                                                                         |
-| ------------------------- | ----------------------------------------------------------------------------------- |
-| `REDIS_HOST`              | Host of the Redis database                                                          |
-| `REDIS_PORT`              | Port on which Redis is listening                                                    |
-| `REDIS_DB`                | Redis database number                                                               |
-| `REDIS_USER`              | User to use to connect to Redis                                                     |
-| `REDIS_PASSWORD`          | Password to use to connect to Redis                                                 |
-| `FRONTEND_ORIGIN`         | Origin of the frontend                                                              |
-| `JWT_SECRET`              | Secret to use to sign JWT                                                           |
-| `HASH_SECRET`             | Secret to pass to argon2                                                            |
-| `ENABLE_HTTP_COMPRESSION` | Whether or not to enable gzip compression for the canvas route. Defaults to `true`. |
+| Variable                  | Description                                                                                                 |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `REDIS_HOST`              | Host of the Redis database                                                                                  |
+| `REDIS_PORT`              | Port on which Redis is listening                                                                            |
+| `REDIS_DB`                | Redis database number                                                                                       |
+| `REDIS_USER`              | User to use to connect to Redis                                                                             |
+| `REDIS_PASSWORD`          | Password to use to connect to Redis                                                                         |
+| `FRONTEND_ORIGIN`         | Origin of the frontend                                                                                      |
+| `JWT_SECRET`              | Secret to use to sign JWT                                                                                   |
+| `HASH_SECRET`             | Secret to pass to argon2                                                                                    |
+| `ENABLE_HTTP_COMPRESSION` | Whether or not to enable gzip compression for the canvas route. Defaults to `true`.                         |
+| `CLUSTER`                 | Whether or not to generate a node identifier on start up and add it to the HTTP headers of every responses. |
 
 If your database use the default user and/or doesn't have a password you can skip setting them.
 
