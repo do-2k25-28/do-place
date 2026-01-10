@@ -1,16 +1,22 @@
-import { onMounted, onUnmounted, type Ref } from 'vue';
+import { onMounted, onUnmounted, watch, type Ref } from 'vue';
 
 import { useCanvasStore } from './store';
+import { useKeyPressListener } from './useKeyPressListener';
 
 export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
   const store = useCanvasStore();
+  const { isPressed: isSpacedPressed } = useKeyPressListener('Space');
 
-  let allowLeftClick = false;
   let isDragging = false;
   let dragStartX = 0;
   let dragStartY = 0;
   let lastOffsetX = 0;
   let lastOffsetY = 0;
+
+  watch(isSpacedPressed, (isPressed) => {
+    if (isPressed) container.value?.classList.add('can-drag');
+    else container.value?.classList.remove('can-drag');
+  });
 
   const zoom = (factor: number, centerX?: number, centerY?: number) => {
     const canvas = container.value;
@@ -29,22 +35,10 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
     store.scale = newScale;
   };
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.code !== 'Space') return;
-    allowLeftClick = true;
-    container.value?.classList.add('can-drag');
-  };
-
-  const handleKeyUp = (event: KeyboardEvent) => {
-    if (event.code !== 'Space') return;
-    allowLeftClick = false;
-    container.value?.classList.remove('can-drag');
-  };
-
   // Mouse event handlers
   const handleMouseDown = (event: MouseEvent) => {
     // Only allow middle click to move if space is not pressed
-    if ((allowLeftClick && event.buttons === 1) || event.buttons === 4) {
+    if ((isSpacedPressed.value && event.buttons === 1) || event.buttons === 4) {
       isDragging = true;
       dragStartX = event.clientX;
       dragStartY = event.clientY;
@@ -77,9 +71,6 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
   };
 
   onMounted(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-
     const controls = container.value;
     if (!controls) return;
 
@@ -91,9 +82,6 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
   });
 
   onUnmounted(() => {
-    document.removeEventListener('keydown', handleKeyDown);
-    document.removeEventListener('keyup', handleKeyUp);
-
     const controls = container.value;
     if (!controls) return;
 
