@@ -17,7 +17,7 @@ const canvasStore = useCanvasStore();
 const authStore = useAccountStore();
 const api = useApi();
 const { initializeCanvas, drawCanvas } = useCanvas();
-useCanvasControls(canvasContainer);
+const { isSpacedPressed } = useCanvasControls(canvasContainer);
 const { connectToGateway, place } = useCanvasGateway();
 
 function onWindowResize() {
@@ -43,6 +43,7 @@ watch(
 
 function handleClick(event: PointerEvent): void {
   if (!authStore.connected) return;
+  if (isSpacedPressed.value) return;
 
   const canvas = event.target as HTMLCanvasElement;
   const rect = canvas.getBoundingClientRect();

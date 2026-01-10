@@ -91,4 +91,6 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
     controls.removeEventListener('mouseleave', handleMouseUp);
     controls.removeEventListener('wheel', handleWheel);
   });
+
+  return { isSpacedPressed };
 }
