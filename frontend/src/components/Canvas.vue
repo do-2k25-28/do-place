@@ -103,6 +103,14 @@ div#canvas {
   overflow: hidden;
 }
 
+div#canvas.can-drag {
+  cursor: grab;
+}
+
+div#canvas.dragging {
+  cursor: grabbing;
+}
+
 canvas {
   aspect-ratio: unset;
   image-rendering: pixelated;

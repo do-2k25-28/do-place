@@ -5,6 +5,7 @@ import { useCanvasStore } from './store';
 export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
   const store = useCanvasStore();
 
+  let allowLeftClick = false;
   let isDragging = false;
   let dragStartX = 0;
   let dragStartY = 0;
@@ -28,13 +29,29 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
     store.scale = newScale;
   };
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.code !== 'Space') return;
+    allowLeftClick = true;
+    container.value?.classList.add('can-drag');
+  };
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    if (event.code !== 'Space') return;
+    allowLeftClick = false;
+    container.value?.classList.remove('can-drag');
+  };
+
   // Mouse event handlers
   const handleMouseDown = (event: MouseEvent) => {
-    isDragging = true;
-    dragStartX = event.clientX;
-    dragStartY = event.clientY;
-    lastOffsetX = store.offsetX;
-    lastOffsetY = store.offsetY;
+    // Only allow middle click to move if space is not pressed
+    if ((allowLeftClick && event.buttons === 1) || event.buttons === 4) {
+      isDragging = true;
+      dragStartX = event.clientX;
+      dragStartY = event.clientY;
+      lastOffsetX = store.offsetX;
+      lastOffsetY = store.offsetY;
+      container.value?.classList.add('dragging');
+    }
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -49,6 +66,7 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
 
   const handleMouseUp = () => {
     isDragging = false;
+    container.value?.classList.remove('dragging');
   };
 
   const handleWheel = (event: WheelEvent) => {
@@ -59,6 +77,9 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
   };
 
   onMounted(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
     const controls = container.value;
     if (!controls) return;
 
@@ -70,6 +91,9 @@ export function useCanvasControls(container: Ref<HTMLDivElement | null>) {
   });
 
   onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeyDown);
+    document.removeEventListener('keyup', handleKeyUp);
+
     const controls = container.value;
     if (!controls) return;
 
