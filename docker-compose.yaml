@@ -4,6 +4,7 @@ services:
     command: redis-server /etc/redis/redis.conf
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
+      - db:/data
 
   backend:
     image: gitlab.polytech.umontpellier.fr:5050/dorian.richard/do-place:v0.0.1-beta.8
@@ -34,6 +35,9 @@ services:
       - backend
     ports:
       - "8081:80"
+
+volumes:
+  db:
 
 secrets:
   redis:

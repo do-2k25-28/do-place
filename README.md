@@ -20,6 +20,10 @@ Unfortunately, Redis doesn't offer user/password definition in environment varia
 user default off
 user doplace on >[MY_STRONG_PASSWORD] ~* &* +@all
 loadmodule /opt/redis-stack/lib/rejson.so
+save 900 1
+save 300 10
+save 60 10000
+dir /data
 ```
 
 Replace `[MY_STRONG_PASSWORD]` with your own. Do not remove the `>`!
